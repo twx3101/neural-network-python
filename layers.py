@@ -135,7 +135,22 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
+    q = 1 - p
+    out = np.array(X.shape)
 
+    if train == True:
+        mask = np.random.rand(X.shape)
+        for row in mask:
+            for cell in row:
+                if cell < p:
+                    cell = 0
+        mask *= (1/q)
+        out = mask * x
+
+    
+    else: #testing mode
+        out = x
+        
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
