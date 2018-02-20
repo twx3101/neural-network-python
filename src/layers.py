@@ -55,12 +55,16 @@ def linear_backward(dout, X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-    number_of_example = X.shape[0]
     X_original_shape = X.shape
 
-    dX = np.dot(dout, w.T)
+    dX = np.dot(dout, W.T)
     dX = dX.reshape(X_original_shape)
 
+    reshape_X = X.reshape(X.shape[0],-1)
+
+    dW = np.dot(reshape_X.T,dout)
+
+    db = np.sum(dout,axis = 0)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -115,7 +119,7 @@ def relu_backward(dout, X):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-    dX = np.greater(X,0).astype(int)
+    dX = dout*(np.greater(X,0).astype(int))
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -151,19 +155,17 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     ###########################################################################
     q = 1 - p
     out = np.array(X.shape)
-
+    out = X.copy()
+    print(out)
+    # print(X.shape," : " ,X.shape[1]," ::::::::::::::::::::::::")
     if train == True:
-        mask = np.random.rand(X.shape)
-        for row in mask:
-            for cell in row:
-                if cell < p:
-                    cell = 0
-        mask *= (1/q)
-        out = mask * x
+        mask = np.random.binomial(1, q, size=X.shape)
 
+        out = 1/q * mask * X
 
     else: #testing mode
-        out = x
+        out = X
+
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
