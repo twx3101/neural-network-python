@@ -156,7 +156,7 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     q = 1 - p
     out = np.array(X.shape)
     out = X.copy()
-    print(out)
+    # print(out)
     # print(X.shape," : " ,X.shape[1]," ::::::::::::::::::::::::")
     if train == True:
         mask = np.random.binomial(1, q, size=X.shape)
