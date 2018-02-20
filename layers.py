@@ -151,7 +151,6 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     else: #testing mode
         out = x
         
-
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -182,6 +181,10 @@ def dropout_backward(dout, mask, p=0.5, train=True):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    if train == True:
+        dx = dout * mask
+    else: #testing mode
+        dx = dout
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
