@@ -22,7 +22,9 @@ def linear_forward(X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-
+    X_reshaped = X.reshape(X.shape[0],-1)
+    # print(X_reshaped,"dddddddddddddddddddddddd")
+    out = np.dot(X_reshaped,W) + b.T
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -53,6 +55,11 @@ def linear_backward(dout, X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
+    number_of_example = X.shape[0]
+    X_original_shape = X.shape
+
+    dX = np.dot(dout, w.T)
+    dX = dX.reshape(X_original_shape)
 
 
     ###########################################################################
@@ -79,6 +86,13 @@ def relu_forward(X):
     ###########################################################################
     out = X.copy()  # Must use copy in numpy to avoid pass by reference.
     out[out < 0] = 0
+
+    #out = 1/(1+np.exp(-X))  Sigmoid functions
+
+    # ReLU function
+    for index_1 in range(X.shape[0]):
+        for index_2 in range(X.shape[1]):
+            out[index_1][index_2] = max(0,out[index_1][index_2])
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -101,7 +115,7 @@ def relu_backward(dout, X):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-
+    dX = np.greater(X,0).astype(int)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -147,10 +161,10 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
         mask *= (1/q)
         out = mask * x
 
-    
+
     else: #testing mode
         out = x
-        
+
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
