@@ -23,7 +23,6 @@ def linear_forward(X, W, b):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     X_reshaped = X.reshape(X.shape[0],-1)
-    # print(X_reshaped,"dddddddddddddddddddddddd")
     out = np.dot(X_reshaped,W) + b.T
 
     ###########################################################################
