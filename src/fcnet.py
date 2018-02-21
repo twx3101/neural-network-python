@@ -1,8 +1,14 @@
 import numpy as np
+import math
+import random
 
 from src.classifiers import softmax
 from src.layers import (linear_forward, linear_backward, relu_forward,
                         relu_backward, dropout_forward, dropout_backward)
+
+# from classifiers import softmax
+# from layers import (linear_forward, linear_backward, relu_forward,
+#                         relu_backward, dropout_forward, dropout_backward)
 
 
 
@@ -20,8 +26,10 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-
-
+    #reference : https://isaacchanghau.github.io/2017/05/24/Weight-Initialization-in-Artificial-Neural-Networks/
+    weight_range = math.sqrt(weight_scale/(n_in + n_out))
+    W = np.random.randn(-weight_range, weight_range)
+    b = b*0
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -69,8 +77,8 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-
-
+        self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims,weight_scale,dtype)
+        self.params['W2'],self.params['b2'] = random_init(hidden_dims, num_classes, weight_scale,dtype)
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -117,7 +125,7 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-
+            # [linear - relu - (dropout)] x (N - 1) - linear - softmax
 
         #######################################################################
         #                            END OF YOUR CODE                         #

@@ -9,7 +9,6 @@ import pickle as pickle
 import numpy as np
 
 import optim
-
 """
 @CS231 (cs231n.stanford.edu/)
 """
