@@ -8,7 +8,10 @@ import pickle as pickle
 
 import numpy as np
 
-import optim
+# import optim
+
+from src.utils.optim import sgd, sgd_momentum
+# import utils.optim
 """
 @CS231 (cs231n.stanford.edu/)
 """

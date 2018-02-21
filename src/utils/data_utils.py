@@ -5,6 +5,8 @@ import os
 from scipy.misc import imread
 import platform
 
+#from scipy import imread
+
 def load_pickle(f):
     version = platform.python_version_tuple()
     if version[0] == '2':

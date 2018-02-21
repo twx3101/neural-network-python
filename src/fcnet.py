@@ -5,10 +5,9 @@ import random
 from src.classifiers import softmax
 from src.layers import (linear_forward, linear_backward, relu_forward,
                         relu_backward, dropout_forward, dropout_backward)
-
-# from classifiers import softmax
+#from classifiers import softmax
 # from layers import (linear_forward, linear_backward, relu_forward,
-#                         relu_backward, dropout_forward, dropout_backward)
+                        # relu_backward, dropout_forward, dropout_backward)
 
 
 
@@ -27,9 +26,11 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     #reference : https://isaacchanghau.github.io/2017/05/24/Weight-Initialization-in-Artificial-Neural-Networks/
-    weight_range = math.sqrt(weight_scale/(n_in + n_out))
-    W = np.random.randn(-weight_range, weight_range)
-    b = b*0
+    # W = np.random.normal(0,weight_scale,(n_in, n_out))
+    # b = np.zeros((n_out,)).T
+
+    W = weight_scale * np.random.rand(n_in,n_out)
+    b = np.zeros(n_out)
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -77,8 +78,9 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims,weight_scale,dtype)
-        self.params['W2'],self.params['b2'] = random_init(hidden_dims, num_classes, weight_scale,dtype)
+        self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
+        self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
+
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -98,7 +100,8 @@ class FullyConnectedNet(object):
     def loss(self, X, y=None):
         """
         Compute loss and gradient for a minibatch of data.
-        Args:
+        Args:        print()
+
         - X: Input data, numpy array of shape (N, d_1, ..., d_k)
         - y: Array of labels, of shape (N,). y[i] gives the label for X[i].
         Returns:
@@ -126,7 +129,17 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
             # [linear - relu - (dropout)] x (N - 1) - linear - softmax
+        linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
+        relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
+        dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
+                        dropout_forward(relu_cache['relu_layer1'])
 
+        linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
+                                                            self.params['W2'],self.params['b2'])
+        scores = linear_cache['layer1_to_layer2']
+            # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
+            #                 dropout_forward(relu_cache['relu_layer1'],self.dropout_params['p'],\
+            #                                 self.dropout_params['train'],self.dropout_params['seed'])
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -147,7 +160,8 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-
+        loss, dout = softmax(scores,y)
+        dX_layer2_to_layer1 = 0
 
         #######################################################################
         #                            END OF YOUR CODE                         #
