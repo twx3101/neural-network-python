@@ -55,12 +55,12 @@ def linear_backward(dout, X, W, b):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     X_original_shape = X.shape
-    print('\n\n')
-    print("dout shape: ",dout.shape)
-    print("X_original_shape: ",X.shape )
+    # print('\n\n')
+    # print("dout shape: ",dout.shape)
+    # print("X_original_shape: ",X.shape )
     dX = np.dot(dout, W.T)
-    print("Weight shape: ", W.shape)
-    print("dX shape: ",dX.shape)
+    # print("Weight shape: ", W.shape)
+    # print("dX shape: ",dX.shape)
     dX = dX.reshape(X_original_shape)
 
     reshape_X = X.reshape(X.shape[0],-1)
@@ -201,8 +201,14 @@ def dropout_backward(dout, mask, p=0.5, train=True):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     # fix variable name
+    q = 1-p
     if train == True:
-        dX = dout * mask
+        dX = (1/q)*dout * mask
+        #6.96e-10
+
+        # dX = dout * mask
+        #3.93e-10
+
     else: #testing mode
         dX = dout
 

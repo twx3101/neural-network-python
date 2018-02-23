@@ -75,8 +75,8 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        print("Number of input node: ",input_dim)
-        print("Number of hidden nodes: ", hidden_dims, " @@@@@@@@@@@@@@@@@@@@@@")
+        #print("Number of input node: ",input_dim)
+        #print("Number of hidden nodes: ", hidden_dims, " @@@@@@@@@@@@@@@@@@@@@@")
         # could be more generalized by using loop according to number of layers
         self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
         self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
@@ -129,32 +129,32 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
             # [linear - relu - (dropout)] x (N - 1) - linear - softmax
-        print('param[w1] shape: ', self.params['W1'].shape)
-        print('param[w2] shape: ', self.params['W2'].shape)
-        print('param[b1] shape: ', self.params['b1'].shape)
-        print('param[b2] shape: ', self.params['b2'].shape)
-
-
-
-        print("X shape: ", X.shape , " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        # print('param[w1] shape: ', self.params['W1'].shape)
+        # print('param[w2] shape: ', self.params['W2'].shape)
+        # print('param[b1] shape: ', self.params['b1'].shape)
+        # print('param[b2] shape: ', self.params['b2'].shape)
+        #
+        #
+        #
+        # print("X shape: ", X.shape , " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
         linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
-        print("linear forw: ", linear_cache['input_to_layer1'].shape)
+        # print("linear forw: ", linear_cache['input_to_layer1'].shape)
 
         relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
-        print("relu forw shape: ", relu_cache['relu_layer1'].shape)
+        # print("relu forw shape: ", relu_cache['relu_layer1'].shape)
 
         dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
                         dropout_forward(relu_cache['relu_layer1'])
-        print("dropout layer1 shape: ", dropout_cache['dropout_out_layer1'].shape)
-        print("dropout mask shape: ", dropout_cache['dropout_mask_layer1'].shape)
+        # print("dropout layer1 shape: ", dropout_cache['dropout_out_layer1'].shape)
+        # print("dropout mask shape: ", dropout_cache['dropout_mask_layer1'].shape)
 
         linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
                                                             self.params['W2'],self.params['b2'])
-        print("linear forw2 shape: ", linear_cache['layer1_to_layer2'].shape)
+        # print("linear forw2 shape: ", linear_cache['layer1_to_layer2'].shape)
 
         scores = linear_cache['layer1_to_layer2']
-        print(scores.shape, ' scores ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        # print(scores.shape, ' scores ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
             # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
             #                 dropout_forward(relu_cache['relu_layer1'],self.dropout_params['p'],\
             #                                 self.dropout_params['train'],self.dropout_params['seed'])
@@ -179,8 +179,8 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
         loss, dout = softmax(linear_cache['layer1_to_layer2'],y)
-        print("dout shape: ", dout.shape)
-        print("X shape: ", X.shape)
+        # print("dout shape: ", dout.shape)
+        # print("X shape: ", X.shape)
 
         # need to recheck second argument
         dX_layer2_1, dW_layer2_1, db_layer2_1 = linear_backward(dout,dropout_cache['dropout_out_layer1'],\
@@ -189,21 +189,25 @@ class FullyConnectedNet(object):
         relu_back = relu_backward(dX_dropout_back,dX_layer2_1)
         dX_layer1_input, dW_layer1, db_layer1 = linear_backward(relu_back,X,\
                                                             self.params['W1'],self.params['b1'])
-        dW1 = 0
-        dW2 = 0
+
         #updating for use next iteration
-        dW1 = dW1 + (self.reg * self.params['W1'])
-        dW2 = dW2 + (self.reg * self.params['W2'])
+        dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
+        dW_layer2_1 = dW_layer2_1+ (self.reg * self.params['W2'])
         # store in dictionary for use next iteration
-        grads['W1'] = dW1
-        grads['W2'] = dW2
+        # print("dW1: ",dW1)
+        # print("dW2: ",dW2)
+
+        grads['W1'] = dW_layer1
+        grads['W2'] = dW_layer2_1
         grads['b1'] = db_layer1
         grads['b2'] = db_layer2_1
 
         # assume just 2 layers
-        regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2']**2)/2
-        loss = loss + regularization_term
+        regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2']**2)/2.0
+        loss +=  regularization_term
 
+        # print("loss :",loss)
+        # print("grads :", grads)
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################

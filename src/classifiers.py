@@ -40,7 +40,8 @@ def softmax(logits, y):
 #
     #print(logits.shape, " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     # print('label shape: ', y.shape)
-    # print(y)
+    #print(logits)
+    #print(y)
     # print("logits shape: ", logits.shape)
     nom_first_term = logits
     nom_second_term = np.max(logits, axis=1, keepdims= True)
@@ -50,7 +51,7 @@ def softmax(logits, y):
 
     probability_vector = nominator/denominator
     # print(probability_vector.shape , " prob vector#####")
-    # print(probability_vector)
+    #print(probability_vector)
     example_size = logits.shape[0]
     # compute in vector form
     # loss_first_term  = (-1)*(y)
