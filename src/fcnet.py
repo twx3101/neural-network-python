@@ -78,8 +78,9 @@ class FullyConnectedNet(object):
         #print("Number of input node: ",input_dim)
         #print("Number of hidden nodes: ", hidden_dims, " @@@@@@@@@@@@@@@@@@@@@@")
         # could be more generalized by using loop according to number of layers
-        self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
-        self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
+        for i in range(self.num_layers):
+            no = i+1
+            self.params['W'+str(i)], self.params['W'+str(i)] = random_init(input_dim, hidden_dims[i], weight_scale,dtype)
 
         #######################################################################
         #                            END OF YOUR CODE                         #
