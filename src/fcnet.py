@@ -78,6 +78,18 @@ class FullyConnectedNet(object):
         #print("Number of input node: ",input_dim)
         #print("Number of hidden nodes: ", hidden_dims, " @@@@@@@@@@@@@@@@@@@@@@")
         # could be more generalized by using loop according to number of layers
+        # self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
+        # self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
+        # print("input dim: ", input_dim)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ weight 2 hidden layers + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
+        #self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
+        #self.params['W3'],self.params['b3'] = random_init(hidden_dims[1], num_classes, weight_scale,dtype)
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ weigh 1 hidden layer + output ~~~~~~~~~~~~~~~~~~~~#
+        # self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
+        # self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
+
         for i in range(self.num_layers):
             no = i+1
             if i == 0:
@@ -87,6 +99,11 @@ class FullyConnectedNet(object):
             else:
                 self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale,dtype)
 
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+        # print("hidden_dims[0]/ input node: ",hidden_dims)
+        # print("number of class: ", num_classes)
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -118,7 +135,7 @@ class FullyConnectedNet(object):
         If y is not None, then run a training-time forward and backward pass
         and return a tuple of:
         - loss: Scalar value giving the loss
-        - grads: Dictionary with the same keys as self.params, mapping
+        - grads: Dictionary with the same keys as self.param s, mapping
         parameter
           names to gradients of the loss with respect to those parameters.
         """
@@ -142,28 +159,50 @@ class FullyConnectedNet(object):
         #
         #
         #
-        # print("X shape: ", X.shape , " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        #print("X shape: ", X.shape , " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        ######################### 2 layers ###########################################
+        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
+        # relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
+        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
+        #                 dropout_forward(relu_cache['relu_layer1'])
+        #
+        # linear_cache['input_to_layer2'] =  linear_forward(dropout_cache['dropout_out_layer1'],self.params['W2'],self.params['b2'])
+        # relu_cache['relu_layer2']       =  relu_forward(linear_cache['input_to_layer2'])
+        # dropout_cache['dropout_out_layer2'],dropout_cache['dropout_mask_layer2'] =\
+        #                 dropout_forward(relu_cache['relu_layer2'])
+        #
+        # linear_cache['layer2_to_output'] = linear_forward(dropout_cache['dropout_out_layer2'],\
+        #                                                     self.params['W3'],self.params['b3'])
+        # scores = linear_cache['layer2_to_output']
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #######################linear dropout relu linear #####################
+        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
+        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
+        #             dropout_forward(linear_cache['input_to_layer1'])
+        # relu_cache['relu_layer1']       =  relu_forward(dropout_cache['dropout_out_layer1'])
+        # linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
+        #                                                     self.params['W2'],self.params['b2'])
+        # scores = linear_cache['layer1_to_layer2']
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
-        # print("linear forw: ", linear_cache['input_to_layer1'].shape)
+        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W'+str(i)],self.params['b'+str(i)])
+        # relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
+        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
+        #                 dropout_forward(relu_cache['relu_layer1'])
+        # linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
+        #                                                     self.params['W2'],self.params['b2'])
+        # scores = linear_cache['layer1_to_layer2']
 
-        relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
-        # print("relu forw shape: ", relu_cache['relu_layer1'].shape)
+        for i in range(self.num_layers-1):
+            linear_cache[i] =  linear_forward(X,self.params['W'+str(i)],self.params['b'+str(i)])
+            relu_cache[i]  =  relu_forward(linear_cache[i])
+            dropout_cache['dropout'+str(i)],dropout_cache['dropout_mask'+str(i)] =\
+                            dropout_forward(relu_cache[i])
 
-        dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
-                        dropout_forward(relu_cache['relu_layer1'])
-        # print("dropout layer1 shape: ", dropout_cache['dropout_out_layer1'].shape)
-        # print("dropout mask shape: ", dropout_cache['dropout_mask_layer1'].shape)
+        linear_cache[self.num_layers-1] = linear_forward(relu_cache[self.num_layers-2],\
+                                self.params['W'+str(self.num_layers-1)],self.params['b'+str(self.num_layers-1)])
+        scores = linear_cache[self.num_layers-1]
 
-        linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
-                                                            self.params['W2'],self.params['b2'])
-        # print("linear forw2 shape: ", linear_cache['layer1_to_layer2'].shape)
-
-        scores = linear_cache['layer1_to_layer2']
-        # print(scores.shape, ' scores ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-            # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
-            #                 dropout_forward(relu_cache['relu_layer1'],self.dropout_params['p'],\
-            #                                 self.dropout_params['train'],self.dropout_params['seed'])
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -184,9 +223,42 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        loss, dout = softmax(linear_cache['layer1_to_layer2'],y)
-        # print("dout shape: ", dout.shape)
-        # print("X shape: ", X.shape)
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 2 hidden layers + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # loss, dout = softmax(linear_cache['layer2_to_output'],y)
+        # dX_layer_output_2, dW_layer_output_2, db_layer_output_2 = linear_backward(dout,dropout_cache['dropout_out_layer2'],\
+        #                                     self.params['W3'],self.params['b3'])
+        # dX_dropout_back2 = dropout_backward(dX_layer_output_2,dropout_cache['dropout_mask_layer2'])
+        # relu_back2 = relu_backward(dX_dropout_back2,relu_cache['relu_layer2'])
+        # dX_layer2_1, dW_layer2, db_layer2 = linear_backward(relu_back2,linear_cache['input_to_layer2'],\
+        #                                         self.params['W2'],self.params['b2'])
+        #
+        # dX_dropout_back1 = dropout_backward(dX_layer2_1,dropout_cache['dropout_mask_layer1'])
+        # relu_back1 = relu_backward(dX_dropout_back1,relu_cache['relu_layer2'])
+        # dX_layer1_input, dW_layer1, db_layer1 = linear_backward(relu_back1,linear_cache['input_to_layer1'],\
+        #                                                     self.params['W1'],self.params['b1'])
+        # #updating for use next iteration
+        # dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
+        # dW_layer2 = dW_layer2+ (self.reg * self.params['W2'])
+        # dW_layer_output_2 = dW_layer_output_2+ (self.reg * self.params['W3'])
+        #
+        # # store in dictionary for use next iteration
+        #
+        # grads['W1'] = dW_layer1
+        # grads['W2'] = dW_layer2
+        # grads['W3'] = dW_layer_output_2
+        # grads['b1'] = db_layer1
+        # grads['b2'] = db_layer2
+        # grads['b3'] = db_layer_output_2
+        #
+        #
+        # # assume just 2 layers
+        # regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2'])**2\
+        #                                 +np.sum(self.params['W3']**2)*0.5
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~ 1 hidden layer + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+        loss, dout = softmax(linear_cache[self.num_layers-1],y)
 
         # need to recheck second argument
         dX_layer2_1, dW_layer2_1, db_layer2_1 = linear_backward(dout,dropout_cache['dropout_out_layer1'],\
@@ -196,24 +268,30 @@ class FullyConnectedNet(object):
         dX_layer1_input, dW_layer1, db_layer1 = linear_backward(relu_back,X,\
                                                             self.params['W1'],self.params['b1'])
 
-        #updating for use next iteration
-        dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
-        dW_layer2_1 = dW_layer2_1+ (self.reg * self.params['W2'])
-        # store in dictionary for use next iteration
-        # print("dW1: ",dW1)
-        # print("dW2: ",dW2)
+        for i in range(self.num_layers-2, -1,-1):
+            dX, dW, db = linear_backward(dout,dropout_cache['dropout'+str(i)],\
+                                                    self.params['W' + str(i)],self.params['b' + str(i)])
+            dX_dropout_back = dropout_backward(dX,dropout_cache['dropout_mask' + str(i)])
+            relu_back = relu_backward(dX_dropout_back,relu_cache[i])
 
-        grads['W1'] = dW_layer1
-        grads['W2'] = dW_layer2_1
-        grads['b1'] = db_layer1
-        grads['b2'] = db_layer2_1
+            dW +=  (self.reg * self.params['W' + str(i)])
+            grads['W' + str(i)] = dW
+            grads['b' + str(i)] = db
+        #updating for use next iteration
+        # dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
+        # dW_layer2_1 = dW_layer2_1+ (self.reg * self.params['W2'])
+        # store in dictionary for use next iteration
+
+        # grads['W1'] = dW_layer1
+        # grads['W2'] = dW_layer2_1
+        # grads['b1'] = db_layer1
+        # grads['b2'] = db_layer2_1
 
         # assume just 2 layers
         regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2']**2)/2.0
+
         loss +=  regularization_term
 
-        # print("loss :",loss)
-        # print("grads :", grads)
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
