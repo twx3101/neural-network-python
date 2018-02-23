@@ -287,28 +287,26 @@ class FullyConnectedNet(object):
 
         dout_cache = {}
 
-        for i in range(self.num_layers-1, -1,-1):
+        for i in range(self.num_layers-1, 0,-1):
 
             if(i== self.num_layers-1):
                 dX, dW, db = linear_backward(dout,dropout_cache['dropout'+str(i-1)],\
                                                 self.params['W' + str(i)],self.params['b' + str(i)])
-            elif i > 0:
+            else:
                 dX, dW, db = linear_backward(relu_back,dropout_cache['dropout'+str(i-1)],\
                             self.params['W' + str(i)],self.params['b' + str(i)])
-            else:
-                dX, dW, db = linear_backward(relu_back,X,\
-                            self.params['W' + str(i)],self.params['b' + str(i)])
-                dW +=  (self.reg * self.params['W' + str(i)])
-                grads['W' + str(i)] = dW
-                grads['b' + str(i)] = db
-
-                break
 
             dX_dropout_back = dropout_backward(dX,dropout_cache['dropout_mask' + str(i-1)])
             relu_back = relu_backward(dX_dropout_back,relu_cache[i-1])
             dW +=  (self.reg * self.params['W' + str(i)])
             grads['W' + str(i)] = dW
             grads['b' + str(i)] = db
+
+        dX, dW, db = linear_backward(relu_back,X,\
+                    self.params['W0'],self.params['b0'])
+        dW +=  (self.reg * self.params['W0'])
+        grads['W0'] = dW
+        grads['b0'] = db
         
         regularization_term = 0
         for i in range(self.num_layers):
