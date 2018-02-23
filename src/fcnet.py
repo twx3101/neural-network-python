@@ -80,7 +80,12 @@ class FullyConnectedNet(object):
         # could be more generalized by using loop according to number of layers
         for i in range(self.num_layers):
             no = i+1
-            self.params['W'+str(i)], self.params['W'+str(i)] = random_init(input_dim, hidden_dims[i], weight_scale,dtype)
+            if i == 0:
+                self.params['W'+str(i)], self.params['b'+str(i)] = random_init(input_dim, hidden_dims[i], weight_scale,dtype)
+            elif i == self.num_layers - 1:
+                self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dim[i], num_classes, weight_scale,dtype)
+            else:
+                self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale,dtype)
 
         #######################################################################
         #                            END OF YOUR CODE                         #
