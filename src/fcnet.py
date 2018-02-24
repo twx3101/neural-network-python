@@ -23,8 +23,6 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     #reference : https://isaacchanghau.github.io/2017/05/24/Weight-Initialization-in-Artificial-Neural-Networks/
-    # W = np.random.normal(0,weight_scale,(n_in, n_out))
-    # b = np.zeros((n_out,)).T
 
     W = weight_scale * np.random.rand(n_in,n_out)
     b = np.zeros(n_out)
@@ -75,44 +73,14 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        #print("Number of input node: ",input_dim)
-        #print("Number of hidden nodes: ", hidden_dims, " @@@@@@@@@@@@@@@@@@@@@@")
-        # could be more generalized by using loop according to number of layers
-        # self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
-        # self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
-        # print("input dim: ", input_dim)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ weight 2 hidden layers + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
-        #self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
-        #self.params['W3'],self.params['b3'] = random_init(hidden_dims[1], num_classes, weight_scale,dtype)
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ weigh 1 hidden layer + output ~~~~~~~~~~~~~~~~~~~~#
-        # self.params['W1'],self.params['b1'] = random_init(input_dim, hidden_dims[0],weight_scale,dtype)
-        # self.params['W2'],self.params['b2'] = random_init(hidden_dims[0], hidden_dims[1], weight_scale,dtype)
-
-        # for i in range(self.num_layers):
-        #     no = i+1
-        #     if i == 0:
-        #         self.params['W'+str(i)], self.params['b'+str(i)] = random_init(input_dim, hidden_dims[i], weight_scale,dtype)
-        #     elif i == self.num_layers - 1:
-        #         self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dim[i], num_classes, weight_scale,dtype)
-        #     else:
-        #         self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale,dtype)
+     
         for i in range(self.num_layers):
-            # no = i+1
-        #    print(" i : ",i)
             if i == 0:
                 self.params['W'+str(i)], self.params['b'+str(i)] = random_init(input_dim, hidden_dims[i], weight_scale,dtype)
             elif i == self.num_layers - 1:
                 self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dims[i-1], num_classes, weight_scale,dtype)
             else:
                 self.params['W'+str(i)], self.params['b'+str(i)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale,dtype)
-
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-        # print("hidden_dims[0]/ input node: ",hidden_dims)
-        # print("number of class: ", num_classes)
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -161,56 +129,6 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
             # [linear - relu - (dropout)] x (N - 1) - linear - softmax
-        # print('param[w1] shape: ', self.params['W1'].shape)
-        # print('param[w2] shape: ', self.params['W2'].shape)
-        # print('param[b1] shape: ', self.params['b1'].shape)
-        # print('param[b2] shape: ', self.params['b2'].shape)
-        #
-        #
-        #
-        #print("X shape: ", X.shape , " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        ######################### 2 layers ###########################################
-        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
-        # relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
-        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
-        #                 dropout_forward(relu_cache['relu_layer1'])
-        #
-        # linear_cache['input_to_layer2'] =  linear_forward(dropout_cache['dropout_out_layer1'],self.params['W2'],self.params['b2'])
-        # relu_cache['relu_layer2']       =  relu_forward(linear_cache['input_to_layer2'])
-        # dropout_cache['dropout_out_layer2'],dropout_cache['dropout_mask_layer2'] =\
-        #                 dropout_forward(relu_cache['relu_layer2'])
-        #
-        # linear_cache['layer2_to_output'] = linear_forward(dropout_cache['dropout_out_layer2'],\
-        #                                                     self.params['W3'],self.params['b3'])
-        # scores = linear_cache['layer2_to_output']
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #######################linear dropout relu linear #####################
-        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W1'],self.params['b1'])
-        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
-        #             dropout_forward(linear_cache['input_to_layer1'])
-        # relu_cache['relu_layer1']       =  relu_forward(dropout_cache['dropout_out_layer1'])
-        # linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
-        #                                                     self.params['W2'],self.params['b2'])
-        # scores = linear_cache['layer1_to_layer2']
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        # linear_cache['input_to_layer1'] =  linear_forward(X,self.params['W'+str(i)],self.params['b'+str(i)])
-        # relu_cache['relu_layer1']       =  relu_forward(linear_cache['input_to_layer1'])
-        # dropout_cache['dropout_out_layer1'],dropout_cache['dropout_mask_layer1'] =\
-        #                 dropout_forward(relu_cache['relu_layer1'])
-        # linear_cache['layer1_to_layer2'] = linear_forward(relu_cache['relu_layer1'],\
-        #                                                     self.params['W2'],self.params['b2'])
-        # scores = linear_cache['layer1_to_layer2']
-
-        # for i in range(self.num_layers-1):
-        #     linear_cache[i] =  linear_forward(X,self.params['W'+str(i)],self.params['b'+str(i)])
-        #     relu_cache[i]  =  relu_forward(linear_cache[i])
-        #     dropout_cache['dropout'+str(i)],dropout_cache['dropout_mask'+str(i)] =\
-        #                     dropout_forward(relu_cache[i])
-
-        # linear_cache[self.num_layers-1] = linear_forward(relu_cache[self.num_layers-2],\
-        #                         self.params['W'+str(self.num_layers-1)],self.params['b'+str(self.num_layers-1)])
-        # scores = linear_cache[self.num_layers-1]
         
         output_cache = {}
         for i in range(self.num_layers-1):
@@ -223,8 +141,7 @@ class FullyConnectedNet(object):
                             dropout_forward(relu_cache[i])
             output_cache[i] = dropout_cache['dropout'+str(i)]
     
-
-        linear_cache[self.num_layers-1] = linear_forward(relu_cache[self.num_layers-2],\
+        linear_cache[self.num_layers-1] = linear_forward(output_cache[self.num_layers-2],\
                                 self.params['W'+str(self.num_layers-1)],self.params['b'+str(self.num_layers-1)])
         scores = linear_cache[self.num_layers-1]
 
@@ -249,40 +166,6 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
 
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 2 hidden layers + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # loss, dout = softmax(linear_cache['layer2_to_output'],y)
-        # dX_layer_output_2, dW_layer_output_2, db_layer_output_2 = linear_backward(dout,dropout_cache['dropout_out_layer2'],\
-        #                                     self.params['W3'],self.params['b3'])
-        # dX_dropout_back2 = dropout_backward(dX_layer_output_2,dropout_cache['dropout_mask_layer2'])
-        # relu_back2 = relu_backward(dX_dropout_back2,relu_cache['relu_layer2'])
-        # dX_layer2_1, dW_layer2, db_layer2 = linear_backward(relu_back2,linear_cache['input_to_layer2'],\
-        #                                         self.params['W2'],self.params['b2'])
-        #
-        # dX_dropout_back1 = dropout_backward(dX_layer2_1,dropout_cache['dropout_mask_layer1'])
-        # relu_back1 = relu_backward(dX_dropout_back1,relu_cache['relu_layer2'])
-        # dX_layer1_input, dW_layer1, db_layer1 = linear_backward(relu_back1,linear_cache['input_to_layer1'],\
-        #                                                     self.params['W1'],self.params['b1'])
-        # #updating for use next iteration
-        # dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
-        # dW_layer2 = dW_layer2+ (self.reg * self.params['W2'])
-        # dW_layer_output_2 = dW_layer_output_2+ (self.reg * self.params['W3'])
-        #
-        # # store in dictionary for use next iteration
-        #
-        # grads['W1'] = dW_layer1
-        # grads['W2'] = dW_layer2
-        # grads['W3'] = dW_layer_output_2
-        # grads['b1'] = db_layer1
-        # grads['b2'] = db_layer2
-        # grads['b3'] = db_layer_output_2
-        #
-        #
-        # # assume just 2 layers
-        # regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2'])**2\
-        #                                 +np.sum(self.params['W3']**2)*0.5
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        #~~~~~~~~~~~~~~~~~~~~~~~~ 1 hidden layer + output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
         loss, dout = softmax(linear_cache[self.num_layers-1],y)
 
         dout_cache = {}
@@ -314,37 +197,6 @@ class FullyConnectedNet(object):
         
         loss +=  regularization_term
         
-        # need to recheck second argument
-        # dX_layer2_1, dW_layer2_1, db_layer2_1 = linear_backward(dout,dropout_cache['dropout_out_layer1'],\
-        #                                     self.params['W2'],self.params['b2'])
-        # dX_dropout_back = dropout_backward(dX_layer2_1,dropout_cache['dropout_mask_layer1'])
-        # relu_back = relu_backward(dX_dropout_back,dX_layer2_1)
-        # dX_layer1_input, dW_layer1, db_layer1 = linear_backward(relu_back,X,\
-        #                                                     self.params['W1'],self.params['b1'])
-
-        # for i in range(self.num_layers-2, -1,-1):
-        #     dX, dW, db = linear_backward(dout,dropout_cache['dropout'+str(i)],\
-        #                                             self.params['W' + str(i)],self.params['b' + str(i)])
-        #     dX_dropout_back = dropout_backward(dX,dropout_cache['dropout_mask' + str(i)])
-        #     relu_back = relu_backward(dX_dropout_back,relu_cache[i])
-
-        #     dW +=  (self.reg * self.params['W' + str(i)])
-        #     grads['W' + str(i)] = dW
-        #     grads['b' + str(i)] = db
-        #updating for use next iteration
-        # dW_layer1 =dW_layer1 + (self.reg * self.params['W1'])
-        # dW_layer2_1 = dW_layer2_1+ (self.reg * self.params['W2'])
-        # store in dictionary for use next iteration
-
-        # grads['W1'] = dW_layer1
-        # grads['W2'] = dW_layer2_1
-        # grads['b1'] = db_layer1
-        # grads['b2'] = db_layer2_1
-
-        # assume just 2 layers
-        # regularization_term = self.reg * np.sum(self.params['W1']**2)+ np.sum(self.params['W2']**2)/2.0
-
-        # loss +=  regularization_term
 
         #######################################################################
         #                            END OF YOUR CODE                         #
