@@ -195,7 +195,7 @@ class FullyConnectedNet(object):
         for i in range(self.num_layers):
             regularization_term += 0.5 * self.reg * np.sum(self.params['W'+str(i)])**2
         
-        loss +=  regularization_term
+        loss +=  regularization_term/self.params['W0'].shape[0]
         
 
         #######################################################################
