@@ -38,11 +38,7 @@ def softmax(logits, y):
 #    before softmax   expected class : logits = [ [0], [1], [1] , [5], .....]
 #                     true label :        y  = [ [0], [3], [2], ....]
 #
-    #print(logits.shape, " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    # print('label shape: ', y.shape)
-    #print(logits)
-    #print(y)
-    # print("logits shape: ", logits.shape)
+ 
     nom_first_term = logits
     nom_second_term = np.max(logits, axis=1, keepdims= True)
     nominator = np.exp(nom_first_term - nom_second_term)
@@ -50,41 +46,13 @@ def softmax(logits, y):
     denominator = np.sum(nominator,axis=1, keepdims = True)
 
     probability_vector = nominator/denominator
-    # print(probability_vector.shape , " prob vector#####")
-    #print(probability_vector)
+   
+    smooth_factor = 1e-14
+
     example_size = logits.shape[0]
-    # compute in vector form
-    # loss_first_term  = (-1)*(y)
-    # print(loss_first_term)
-    # print(loss_first_term.shape, " loss_first_term:::::::::::::::::::;")
-    #
-    # loss_second_term = np.log(np.sum(np.exp(probability_vector),axis = 1))
-    # print(loss_second_term, " ~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    # print("loss_second_term shape: ", loss_second_term.shape)
-    # loss = (loss_first_term + loss_second_term)/example_size
-    # loss = np.sum(loss)
-    # print("loss  shape: ", loss.shape)
-    # print(loss)
-    # print(np.sum(loss))
-    loss = -np.sum(np.log(probability_vector[np.arange(example_size),y]))/example_size
-    # print(probability_vector)
-    # print(y)
-    # print('\n prob vec row SUM : ',np.sum(probability_vector[0]))
-    # print('\n\n')
-    # print(probability_vector[0]," : prob vec ,     y[]: ",y[0])
-    # print(probability_vector[0,y[0]])
-    # print('\n')
-    # print(probability_vector[1]," : prob vec,  y[]: ",y[1])
-    # print('\n')
-    # print(probability_vector[2]," : prob vec,  y[]: ",y[2])
-    # print('\n')
-    # print(probability_vector[np.arange(example_size),y[0]])
 
-
-
-
-    # loss = np.log((np.sum(y))/np.sum(np.exp(probability_vector)))
-    # loss = loss*(-1/example_size)
+    loss = -np.sum(np.log(probability_vector[np.arange(example_size),y]+smooth_factor))/example_size
+   
 
 
     dlogits = probability_vector.copy()
