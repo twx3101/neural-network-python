@@ -11,7 +11,7 @@ import numpy as np
 # import optim
 
 from src.utils.optim import sgd, sgd_momentum
-# import utils.optim
+import src.utils.optim
 """
 @CS231 (cs231n.stanford.edu/)
 """
@@ -146,9 +146,9 @@ class Solver(object):
 
         # Make sure the update rule exists, then replace the string
         # name with the actual function
-        if not hasattr(optim, self.update_rule):
+        if not hasattr(src.utils.optim, self.update_rule):
             raise ValueError('Invalid update_rule "%s"' % self.update_rule)
-        self.update_rule = getattr(optim, self.update_rule)
+        self.update_rule = getattr(src.utils.optim, self.update_rule)
 
         self._reset()
 
