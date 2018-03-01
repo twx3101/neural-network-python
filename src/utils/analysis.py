@@ -1,14 +1,24 @@
-def confusionMatrix(solver, binary_targets, no_of_classes):
+import numpy as np
+
+def getClassifications(softmax_matrix):
+    classifications = []
+    for i in range(softmax_matrix.shape[0]):
+        classifications.append(0)
+    for i in range(softmax_matrix.shape[0]):
+        for j in range(softmax_matrix[i].size):
+            if softmax_matrix[i][j] > softmax_matrix[i][classifications[i]]:
+                classifications[i] = j
+    return classifications
+
+def confusionMatrix(classifications, targets, no_of_classes):
     """Generates and outputs a confusion matrix for the solver with correct classifications binary_targets and the number of classes no_of_classes."""
 
     confusion_matrix = np.zeros((no_of_classes,no_of_classes))
 
-    prediction_array = solver.train()
-
     for i in range(no_of_classes):
         for j in range(no_of_classes):
-            for k in range(len(binary_targets)):
-                if binary_targets[k] == j+1 and prediction_array[k] == i+1:
+            for k in range(len(targets)):
+                if targets[k] == j and classifications[k] == i:
                     confusion_matrix[i][j] += 1
 
     return confusion_matrix
