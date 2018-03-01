@@ -1,9 +1,9 @@
-def confusionMatrix(T, x2, binary_targets, no_of_classes, function):
+def confusionMatrix(solver, binary_targets, no_of_classes):
     """Generates and outputs a confusion matrix for the lists of trees T, data x2, correct classifications, binary_targets and the number of classes no_of_classes."""
 
     confusion_matrix = np.zeros((no_of_classes,no_of_classes))
 
-    prediction_array = function(T,x2)
+    prediction_array = solver.train()
 
     for i in range(no_of_classes):
         for j in range(no_of_classes):
