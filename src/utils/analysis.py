@@ -1,5 +1,5 @@
 def confusionMatrix(solver, binary_targets, no_of_classes):
-    """Generates and outputs a confusion matrix for the lists of trees T, data x2, correct classifications, binary_targets and the number of classes no_of_classes."""
+    """Generates and outputs a confusion matrix for the solver with correct classifications binary_targets and the number of classes no_of_classes."""
 
     confusion_matrix = np.zeros((no_of_classes,no_of_classes))
 
