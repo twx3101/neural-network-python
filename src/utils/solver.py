@@ -270,6 +270,8 @@ class Solver(object):
         iterations_per_epoch = max(num_train // self.batch_size, 1)
         num_iterations = self.num_epochs * iterations_per_epoch
 
+        num_iter = 0
+        best_loss = 100.0
         for t in range(num_iterations):
             self._step()
 
@@ -286,6 +288,16 @@ class Solver(object):
                 for k in self.optim_configs:
                     self.optim_configs[k]['learning_rate'] *= self.lr_decay
 
+
+            if self.loss_history[-1] > best_loss:
+                num_iter += 1
+            else:
+                num_iter =0
+                best_loss = self.loss_history[-1]
+
+            if num_iter == 100:
+                break
+            
             # Check train and val accuracy on the first iteration, the last
             # iteration, and at the end of each epoch.
             first_it = (t == 0)
