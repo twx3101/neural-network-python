@@ -10,7 +10,6 @@ import pandas as pd
 
 from builtins import range
 from six.moves import cPickle as pickle
-import numpy as np
 import os
 from scipy.misc import imread
 import platform
@@ -44,7 +43,7 @@ def dir_to_dataset(glob_files, loc_train_labels=""):
 #Train
 # dataset['labels'] = y[:28709]
 #Test
-# dataset['labels'] = y[28710:]
+# dataset['labels'] = y[28709:]
 
 # Output to Pickle File
 #Train
@@ -56,8 +55,18 @@ def dir_to_dataset(glob_files, loc_train_labels=""):
 #_________________________________________________________________
 
 #_____________ OPEN PKL FILE ____________________________
-# pk = open('50label.pkl','rb')
-# test50 = pickle.load(pk)
+# pk = open('old_test_batch.pkl','rb')
+# test = pickle.load(pk)
+# print(test['data'])
+# print(test['labels'])
+
+# pk = open('train_batch.pkl','rb')
+# # pk = open('test_batch.pkl','rb')
+# test = pickle.load(pk)
+# print(test['data'])
+# print(test['data'].shape, " data shape @@@@@@@@@@@@@@@@@@@@@@@@@@@@''")
+# print(test['labels'])
+# print(test['labels'].shape, " labels shape ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#")
 # pk.close()
 # _____________________________________________________
 
