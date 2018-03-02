@@ -170,57 +170,57 @@ class FullyConnectedNet(object):
         #     scores = linear_cache[self.num_layers-1]
 
 
-        for i in range(1,self.num_layers):
-                if i == 1:
-                    input = X
-                else:
-                    if self.use_dropout:
-                        input = dropout_cache['dropout'+str(i-1)]
-                    else:
-                        input = relu_cache[i-1]
-
-
-                linear_cache[i] = linear_forward(input,self.params["W"+str(i)],self.params["b"+str(i)])
-                relu_cache[i] = relu_forward(linear_cache[i])
-
-                if self.use_dropout:
-                    dropout_cache['dropout'+str(i)],dropout_cache['dropout_mask'+str(i)] = dropout_forward\
-                        (relu_cache[i],self.dropout_params["p"],self.dropout_params["train"],self.dropout_params["seed"])
-                        # (relu_cache[i],self.dropout_params["p"],self.dropout_params["train"])
-
-        if self.use_dropout:
-            scores = linear_forward(dropout_cache['dropout'+str(i)],self.params["W"+str(i+1)],self.params["b"+str(i+1)])
-        else:
-            scores = linear_forward(relu_cache[i] ,self.params["W"+str(i+1)],self.params["b"+str(i+1)])
-
+#         for i in range(1,self.num_layers):
+#                 if i == 1:
+#                     input = X
+#                 else:
+#                     if self.use_dropout:
+#                         input = dropout_cache['dropout'+str(i-1)]
+#                     else:
+#                         input = relu_cache[i-1]
+#
+# """
+#                 linear_cache[i] = linear_forward(input,self.params["W"+str(i)],self.params["b"+str(i)])
+#                 relu_cache[i] = relu_forward(linear_cache[i])
+#
+#                 if self.use_dropout:
+#                     dropout_cache['dropout'+str(i)],dropout_cache['dropout_mask'+str(i)] = dropout_forward\
+#                         (relu_cache[i],self.dropout_params["p"],self.dropout_params["train"],self.dropout_params["seed"])
+#                         # (relu_cache[i],self.dropout_params["p"],self.dropout_params["train"])
+#
+#         if self.use_dropout:
+#             scores = linear_forward(dropout_cache['dropout'+str(i)],self.params["W"+str(i+1)],self.params["b"+str(i+1)])
+#         else:
+#             scores = linear_forward(relu_cache[i] ,self.params["W"+str(i+1)],self.params["b"+str(i+1)])
+# """
         # 231
-        # hidden_num = self.num_layers - 1
-        # scores = X
-        # cache_history = []
-        # L2reg = 0
-        # cache_history.append(scores)
+        hidden_num = self.num_layers - 1
+        scores = X
+        cache_history = []
+        L2reg = 0
+        cache_history.append(scores)
         #
-        # for i in range(hidden_num):
-        #     scores = linear_forward(scores, self.params['W%d' % (i + 1)],
-        #                                                     self.params['b%d' % (i + 1)])
-        #     cache_history.append(scores)
-        #     scores =  relu_forward(scores)
-        #     cache_history.append(scores)
-        #     if self.use_dropout:
+        for i in range(hidden_num):
+            scores = linear_forward(scores, self.params['W%d' % (i + 1)],
+                                                            self.params['b%d' % (i + 1)])
+            cache_history.append(scores)
+            scores =  relu_forward(scores)
+            cache_history.append(scores)
+            if self.use_dropout:
+
+                scores, cache = dropout_forward(scores, self.dropout_params["p"],self.dropout_params["train"],self.dropout_params["seed"])
+                # scores, cache = dropout_forward(scores, self.dropout_params["p"],self.dropout_params["train"])
+
+                cache_history.append(cache)
+            L2reg += np.sum(self.params['W%d' % (i + 1)] ** 2)
+
+        i += 1
+        scores = linear_forward(scores, self.params['W%d' % (i + 1)],\
+                                                self.params['b%d' % (i + 1)])
+        #cache_history.append(scores)
         #
-        #         scores, cache = dropout_forward(scores, self.dropout_params["p"],self.dropout_params["train"],self.dropout_params["seed"])
-        #         # scores, cache = dropout_forward(scores, self.dropout_params["p"],self.dropout_params["train"])
-        #
-        #         cache_history.append(cache)
-        #     L2reg += np.sum(self.params['W%d' % (i + 1)] ** 2)
-        #
-        # i += 1
-        # scores = linear_forward(scores, self.params['W%d' % (i + 1)],
-        #                                        self.params['b%d' % (i + 1)])
-        # #cache_history.append(scores)
-        #
-        # L2reg += np.sum(self.params['W%d' % (i + 1)] ** 2)
-        # L2reg *= 0.5 * self.reg
+        L2reg += np.sum(self.params['W%d' % (i + 1)] ** 2)
+        L2reg *= 0.5 * self.reg
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -294,64 +294,63 @@ class FullyConnectedNet(object):
         # # loss +=  regularization_term/self.params['W1'].shape[0]
         # loss +=  regularization_term
 
+# """
+#         loss, dout = softmax(scores,y)
+#
+#         for j in range(self.num_layers,0,-1):
+#
+#             if j == self.num_layers:
+#
+#                 if self.use_dropout:
+#                     input_linear = dropout_cache['dropout'+str(j-1)]
+#                 else:
+#                     input_linear = relu_cache[j-1]
+#
+#                 dX, dW,db = linear_backward(dout, input_linear, self.params["W" + str(j)],self.params["b" + str(j)])
+#
+#             else:
+#                 if self.use_dropout:
+#                     dX = dropout_backward(dX,dropout_cache['dropout_mask'+str(j)],self.dropout_params["p"],self.dropout_params["train"])
+#
+#                 dX = relu_backward(dX,linear_cache[j])
+#
+#                 if self.use_dropout and j != 1:
+#                     input_linear = dropout_cache['dropout'+str(j-1)]
+#                 else:
+#                     if j == 1:
+#                         input_linear = X
+#                     else:
+#                         input_linear = relu_cache[j-1]
+#
+#                 dX, dW,db = linear_backward(dX,input_linear,self.params["W" + str(j)],self.params["b" + str(j)])
+#
+#             grads["W" + str(j)] = dW
+#             grads["b" + str(j)] = db
+#
+#         regularization_term = 0.0
+#         for i in range(1,self.num_layers+1):
+#             regularization_term += np.sum((self.params["W"+str(i)])**2)
+#         regularization_term *= regularization_term* 0.5*self.reg
+#
+#         loss += regularization_term
 
-        loss, dout = softmax(scores,y)
+        ###########################231##############################################
+        loss, dout = softmax(scores, y)
+        loss += L2reg
 
-        for j in range(self.num_layers,0,-1):
+        dout, grads['W%d' % (i + 1)], grads['b%d' % (i + 1)] = linear_backward(dout, cache_history.pop(),self.params['W%d' % (i + 1)],self.params['b%d' % (i + 1)])
+        grads['W%d' % (i + 1)] += self.reg * self.params['W%d' % (i + 1)]
 
-            if j == self.num_layers:
+        i -= 1
+        while i >= 0:
+            if self.use_dropout:
+                dout = dropout_backward(dout, cache_history.pop())
 
-                if self.use_dropout:
-                    input_linear = dropout_cache['dropout'+str(j-1)]
-                else:
-                    input_linear = relu_cache[j-1]
+            dout = relu_backward(dout, cache_history.pop())
+            dout, grads['W%d' % (i + 1)], grads['b%d' % (i + 1)] = linear_backward(dout, cache_history.pop(),self.params['W%d' % (i + 1)],self.params['b%d' % (i + 1)])
 
-                dX, dW,db = linear_backward(dout, input_linear, self.params["W" + str(j)],self.params["b" + str(j)])
-
-            else:
-                if self.use_dropout:
-                    dX = dropout_backward(dX,dropout_cache['dropout_mask'+str(j)],self.dropout_params["p"],self.dropout_params["train"])
-
-                dX = relu_backward(dX,linear_cache[j])
-
-                if self.use_dropout and j != 1:
-                    input_linear = dropout_cache['dropout'+str(j-1)]
-                else:
-                    if j == 1:
-                        input_linear = X
-                    else:
-                        input_linear = relu_cache[j-1]
-
-                dX, dW,db = linear_backward(dX,input_linear,self.params["W" + str(j)],self.params["b" + str(j)])
-
-            grads["W" + str(j)] = dW
-            grads["b" + str(j)] = db
-
-        regularization_term = 0.0
-        for i in range(1,self.num_layers+1):
-            regularization_term += np.sum((self.params["W"+str(i)])**2)
-        regularization_term *= regularization_term* 0.5*self.reg
-
-        loss += regularization_term
-
-
-        # 231
-        # loss, dout = softmax(scores, y)
-        # loss += L2reg
-        #
-        # dout, grads['W%d' % (i + 1)], grads['b%d' % (i + 1)] = linear_backward(dout, cache_history.pop(),self.params['W%d' % (i + 1)],self.params['b%d' % (i + 1)])
-        # grads['W%d' % (i + 1)] += self.reg * self.params['W%d' % (i + 1)]
-        #
-        # i -= 1
-        # while i >= 0:
-        #     if self.use_dropout:
-        #         dout = dropout_backward(dout, cache_history.pop())
-        #
-        #     dout = relu_backward(dout, cache_history.pop())
-        #     dout, grads['W%d' % (i + 1)], grads['b%d' % (i + 1)] = linear_backward(dout, cache_history.pop(),self.params['W%d' % (i + 1)],self.params['b%d' % (i + 1)])
-        #
-        #     grads['W%d' % (i + 1)] += self.reg * self.params['W%d' % (i + 1)]
-        #     i -= 1
+            grads['W%d' % (i + 1)] += self.reg * self.params['W%d' % (i + 1)]
+            i -= 1
 
 
         #######################################################################
