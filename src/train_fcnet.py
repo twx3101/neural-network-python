@@ -53,9 +53,8 @@ solver = Solver(net, data,update_rule='sgd_momentum',optim_config={\
              batch_size = 10,\
              lr_decay=0.001,\
              print_every =1000)
-solver.train()
+#solver.train()
 plotGraphs(net, solver)
-
 
 probs = solver.model.loss(data['X_test'], None)
 print(probs)
@@ -63,10 +62,15 @@ classifications = an.getClassifications(probs)
 cm = an.confusionMatrix(classifications, targets, 7)
 print(classifications)
 print(cm)
-an.averageRecall(cm, 1)
-an.precisionRate(cm, 1)
-#an.f1(precision, recall)
-print(an.classificationRate(cm, 7))
+recall = an.averageRecall(cm, 1)
+precision = an.precisionRate(cm, 1)
+f1measure = an.f1(precision, recall)
+classification = an.classificationRate(cm, 7)
+print("recall class 1: ", recall)
+print("precision class 1: ", precision)
+print("f1 class 1: ", f1measure)
+print("classification rate: ", classification)
+
 ##############################################################################
 #                             END OF YOUR CODE                               #
 ##############################################################################
