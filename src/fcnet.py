@@ -334,6 +334,17 @@ class FullyConnectedNet(object):
 #
 #         loss += regularization_term
 
+        #--------------------- NEW LOSS #########################
+    #     loss += self.regularization_2()
+    #
+    # def regularization_2(self):
+    #     regularization = 0.0
+    #     for i in range(1,self.num_layers+1):
+    #         W = self.params["W"+str(i)]
+    #         regularization += np.sum(W**2)
+    #     regularization *= 0.5 * self.reg
+    #     return regularization
+
         ###########################231##############################################
         loss, dout = softmax(scores, y)
         loss += L2reg
