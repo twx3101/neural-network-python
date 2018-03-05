@@ -1,6 +1,12 @@
 import numpy as np
+
+from src.fcnet import FullyConnectedNet
+from src.utils.solver import Solver
+from src.utils.data_utils import get_CIFAR10_data
+from src.utils.plot import plotGraphs
+from src.data_utils_fer2013 import get_FER2013_data
+import src.utils.analysis as an
 import pickle as pkl
-import analysis as an
 
 def test_fer_model(img_folder, model="/path/to/model"):
     """
