@@ -1,3 +1,7 @@
+import numpy as np
+import pickle as pkl
+import analysis as an
+
 def test_fer_model(img_folder, model="/path/to/model"):
     """
     Given a folder with images, load the images (in lexico-graphical ordering
@@ -10,6 +14,16 @@ def test_fer_model(img_folder, model="/path/to/model"):
     img_folder.
     """
     preds = None
-    ### Start your code here
-    ### End of code
+    ################## READ PKL FILE ##################################
+
+    pk = open('net.pkl', 'rb')
+    test = pkl.load(pk)
+    print(test)
+
+    ################## TEST NET ########################################
+
+    probs = test.loss(data['X_test'], None)
+    print(probs)
+    preds = an.getClassifications(probs)
+
     return preds
