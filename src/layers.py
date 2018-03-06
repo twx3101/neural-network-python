@@ -22,14 +22,9 @@ def linear_forward(X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-    # original #########################
     X_reshaped = X.reshape(X.shape[0],-1)
     out = np.dot(X_reshaped,W) + b.T
 
-    # x_tmp = X.reshape(X.shape[0], np.prod(X.shape[1:]))
-    # out = x_tmp.dot(W) + b
-
-    # out = X.reshape(X.shape[0], -1).dot(W) + b
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -59,25 +54,6 @@ def linear_backward(dout, X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-    # original ######################
-    # X_original_shape = X.shape
-    # dX = np.dot(dout, W.T)
-    # dX = dX.reshape(X_original_shape)
-    #
-    # reshape_X = X.reshape(X.shape[0],-1)
-    #
-    # dW = np.dot(reshape_X.T,dout)
-    #
-    # db = np.sum(dout,axis = 0)
-
-
-    #
-    # dX = dout.dot(W.T).reshape(X.shape)
-    #
-    # x_tmp = X.reshape(X.shape[0],np.prod(X.shape[1:]))
-    # dW = x_tmp.T.dot(dout)
-    #
-    # db = np.sum(dout, axis=0)
 
     dX = dout.dot(W.T).reshape(X.shape)
     dW = X.reshape(X.shape[0], -1).T.dot(dout)
@@ -106,13 +82,7 @@ def relu_forward(X):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
     out = X.copy()  # Must use copy in numpy to avoid pass by reference.
-    # print(out)
     out[out < 0] = 0
-    # ReLU function
-    ##### original ###################################
-    # for index_1 in range(X.shape[0]):
-    #     for index_2 in range(X.shape[1]):
-    #         out[index_1][index_2] = max(0,out[index_1][index_2])
 
     out = np.maximum(0,X)
     ###########################################################################
@@ -137,9 +107,6 @@ def relu_backward(dout, X):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-    ############ original ###################
-    #dX = dout*(np.greater(X,0).astype(int))
-
 
     dX = dout * (X > 0)
     ###########################################################################
@@ -185,17 +152,6 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     else: #testing mode
         out = X
 
-    #
-    # if 'train' == True:
-    #     mask = (np.random.rand(*X.shape) < (1.0 - p)) / (1.0 - p)
-    #     out = mask * X
-    #
-    # else:
-    #     out = X
-    #
-    # # mask = (dropout_param, mask)
-    # out = out.astype(X.dtype, copy=False)
-
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -229,16 +185,9 @@ def dropout_backward(dout, mask, p=0.5, train=True):
     q = 1.0-p
     if train == True:
         dX = (1.0/q)*dout * mask
-
-
     else: #testing mode
         dX = dout
 
-
-    # if train == True:
-    #     dX = dout * mask
-    # else:
-    #     dX = dout
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
