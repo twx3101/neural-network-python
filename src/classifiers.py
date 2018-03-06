@@ -28,17 +28,7 @@ def softmax(logits, y):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-#  unclean matrix X = [ [matrix ex1], [matrix ex2] ,.., [matrix exn]] : 1xN
-#  clean matrix X = [[vector ex1], [vector ex2] ,.... [vector exn]] : NxK [K = column of vector(feature)]
-#  y = (cleanX)W + b
-#  weight  W = [[vector emotion], [vector emotion],.. [vector emotion]] : KxM [M = column of weight to ex]
-#  yout =  NxK KXM = NxM (number of example x number of class) = N x C
-#     ex N0 = [0.23 0.12 0.32 0.43 0.12 0.53 ..... 0.343] (example0 has 10 emotions )
-#
-#    before softmax   expected class : logits = [ [0], [1], [1] , [5], .....]
-#                     true label :        y  = [ [0], [3], [2], ....]
-#
- 
+
     nom_first_term = logits
     nom_second_term = np.max(logits, axis=1, keepdims= True)
     nominator = np.exp(nom_first_term - nom_second_term)
