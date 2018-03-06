@@ -21,60 +21,13 @@ def dir_to_dataset(glob_files, loc_train_labels=""):
         img = Image.open(file_name).convert('LA') #tograyscale
         pixels = [f[0] for f in list(img.getdata())]
         dataset.append(pixels)
-        # if file_count % 10== 0:
-        #     print()
-        #     # print("\t %s files processed"%file_count)
-    # outfile = glob_files+"out"
-    # np.save(outfile, dataset)
+
     if len(loc_train_labels) > 0:
         df = pd.read_csv(loc_train_labels)
         print()
         return np.array(dataset), np.array(df["emotion"])
     else:
         return np.array(dataset)
-
-
-# dataset = dict()
-# Dataa, y = dir_to_dataset("/vol/bitbucket/395ML_NN_Data/datasets/FER2013/Train/*.jpg","labels_public.csv")
-# Data, y = dir_to_dataset("/vol/bitbucket/395ML_NN_Data/datasets/FER2013/Test/*.jpg","labels_public.csv")
-
-#_____________________ OUTPUT to PKL FILE _____________________________
-# dataset['data'] = Data
-#Train
-# dataset['labels'] = y[:28709]
-#Test
-# dataset['labels'] = y[28709:]
-
-# Output to Pickle File
-#Train
-# output = open('train_batch.pkl','wb')
-#Test
-# output = open('test_batch.pkl','wb')
-# pickle.dump(dataset,output,-1)
-# output.close()
-#_________________________________________________________________
-
-#_____________ OPEN PKL FILE ____________________________
-# pk = open('old_test_batch.pkl','rb')
-# test = pickle.load(pk)
-# print(test['data'])
-# print(test['labels'])
-
-# pk = open('train_batch.pkl','rb')
-# # pk = open('test_batch.pkl','rb')
-# test = pickle.load(pk)
-# print(test['data'])
-# print(test['data'].shape, " data shape @@@@@@@@@@@@@@@@@@@@@@@@@@@@''")
-# print(test['labels'])
-# print(test['labels'].shape, " labels shape ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#")
-# pk.close()
-# _____________________________________________________
-
-# dataset =  Data,y
-#Train
-# test = Dataa.reshape(28709,1,48,48).transpose(0,2,3,1).astype("float")
-#Test
-
 
 
 number_train = 28709
@@ -100,8 +53,6 @@ def load_FER2013_batch(filename):
             number_pic = X.shape[0]
         elif (X.shape[0] == number_test):
             number_pic = X.shape[0]
-        # X = X.reshape(10000, 3, 32, 32).transpose(0,2,3,1).astype("float")
-        # X = X.reshape(50,1, 48, 48).transpose(0,3,1).astype("float")
         X = X.reshape(number_pic,1,48,48).transpose(0,2,3,1).astype("float")
         Y = np.array(Y)
         return X, Y
@@ -121,7 +72,6 @@ def get_FER2013_data(num_training=49000, num_validation=1000, num_test=1000,
     condensed to a single function.
     """
     # Load the raw FER2013 data
-    # FER2013_dir = '/vol/bitbucket/395_Group22/datasets/FER2013-batches-py'
 
     FER2013_dir = '/homes/nj2217/ML/neuralnets/src/fer2013-batches'
 
