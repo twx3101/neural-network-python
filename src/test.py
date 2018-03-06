@@ -2,6 +2,7 @@ import numpy as np
 import os
 
 from src.fcnet import FullyConnectedNet
+from keras.models import load_model
 # import src.fcnet
 from src.utils.solver import Solver
 from src.utils.plot import plotGraphs
@@ -139,13 +140,12 @@ def test_deep_fer_model(img_folder, model="/path/to/model"):
     output.close()
     PATH_TO_PKL = os.getcwd()
     data = get_data_test(PATH_TO_PKL,number_pics, subtract_mean=True)
+    X_test = data['X_test'].reshape(data['X_test'].shape[0], 48, 48, 1)
     ################## READ PKL FILE ##################################
-    pk = open(model, 'rb')
+    model = load_model('model.h5')
 
-    test = pickle.load(pk)
-    print(test)
     ################## TEST NET ########################################
-    preds = keras.model.predict(data['X_test'],verbose = 0)
+    preds = model.predict(X_test,verbose = 0)
 
     print(preds)
     ### End of code
