@@ -4,7 +4,7 @@ from src.fcnet import FullyConnectedNet
 from src.utils.solver import Solver
 from src.utils.data_utils import get_CIFAR10_data
 from src.utils.plot import plotGraphs
-from src.data_utils_fer2013 import get_FER2013_data
+from src.data_utils_fer2013 import dir_to_dataset
 import src.utils.analysis as an
 import pickle as pkl
 
@@ -20,6 +20,10 @@ def test_fer_model(img_folder, model="/path/to/model"):
     img_folder.
     """
     preds = None
+    ################## LOAD DATA ######################################
+    
+    data = dir_to_dataset(img_folder)
+    
     ################## READ PKL FILE ##################################
 
     pk = open(model 'rb')
@@ -28,7 +32,7 @@ def test_fer_model(img_folder, model="/path/to/model"):
 
     ################## TEST NET ########################################
 
-    probs = test.loss(data['X_test'], None)
+    probs = test.loss(data, None)
     print(probs)
     preds = an.getClassifications(probs)
 
