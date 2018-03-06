@@ -146,10 +146,17 @@ def test_deep_fer_model(img_folder, model="/path/to/model"):
 
     ################## TEST NET ########################################
     preds = model.predict(X_test,verbose = 0)
+    matrix_shape = preds.shape
+    no_of_rows = matrix_shape[0]
+    return_array = np.zeros((no_of_rows,1), dtype=int)
 
-    print(preds)
+    for index,row in enumerate(preds):
+        for i in range(len(row)):
+            if row[i] == 1:
+                return_array[index] = i
+    print(return_array)
     ### End of code
-    return preds
+    return return_array
 
 path = "/homes/gw17/neuralnets/src/pic_test"
 pkl_net = "/homes/gw17/neuralnets/net.pkl"
