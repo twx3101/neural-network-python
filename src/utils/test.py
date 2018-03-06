@@ -22,7 +22,7 @@ def test_fer_model(img_folder, model="/path/to/model"):
     preds = None
     ################## READ PKL FILE ##################################
 
-    pk = open('net.pkl', 'rb')
+    pk = open(model 'rb')
     test = pkl.load(pk)
     print(test)
 
