@@ -35,9 +35,7 @@ accuracy on the validation set.
 # plotGraphs(net, solver)
 
 INPUT_NODE = [200, 200, 200]
-# INPUT_NODE = [150,150,150,150,15,15, 400]
-#
-#
+
 data = get_FER2013_data(22960,5740,3580)
 print(data['X_train'][0])
 print(np.shape(data['X_train'][0]))
