@@ -24,6 +24,8 @@ import os
 from scipy.misc import imread
 import platform
 import keras
+from keras.models import model_from_json
+import src.utils.analysis as an
 
 def dir_to_testset(glob_files):
     dataset = []
@@ -112,7 +114,7 @@ def test_fer_model(img_folder, model="/path/to/model"):
     print(preds)
     return preds
 
-def test_deep_fer_model(img_folder, model="/path/to/model"):
+def test_deep_fer_model(img_folder, json_model="/path/to/model", weights="/path/to/weights"):
     """
     Given a folder with images, load the images (in lexico-graphical ordering
     according to the file name of the images) and your best model to predict
@@ -142,22 +144,31 @@ def test_deep_fer_model(img_folder, model="/path/to/model"):
     data = get_data_test(PATH_TO_PKL,number_pics, subtract_mean=True)
     X_test = data['X_test'].reshape(data['X_test'].shape[0], 48, 48, 1)
     ################## READ PKL FILE ##################################
-    model = load_model('model.h5')
+    json_file = open(model, 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    loaded_model.load_weights(weights)
+    print("Loaded model from disk")
 
     ################## TEST NET ########################################
-    preds = model.predict(X_test,verbose = 0)
+    preds = loaded_model.predict(X_test,verbose = 0)
     matrix_shape = preds.shape
     no_of_rows = matrix_shape[0]
-    return_array = np.zeros((no_of_rows,1), dtype=int)
 
-    for index,row in enumerate(preds):
-        for i in range(len(row)):
-            if row[i] == 1:
-                return_array[index] = i
+    return_array = an.getClassifications(preds)
+
     print(return_array)
     ### End of code
     return return_array
 
+#TEST FCNET
 path = "/homes/gw17/neuralnets/src/pic_test"
 pkl_net = "/homes/gw17/neuralnets/net.pkl"
 test_fer_model(path,pkl_net)
+
+
+#TEST CNN
+model = "/homes/wt814/machinelearning/optional/neuralnets/model.json"
+weights = "/homes/wt814/machinelearning/optional/neuralnets/model.h5"
+test_deep_fer_model(path,model, weights)
